@@ -9,18 +9,18 @@ fake = Faker()
 
 
 class BaseGenerator:
-    def __init__(self, count, output_dir):
+    def __init__(self, count: int, output_dir: str):
         self.count = max(count, 10)
         self.output_dir = output_dir
 
-    def generate_data(self):
+    def generate_data(self) -> None:
         for i in range(1, self.count + 1):
             resource_data = self.generate_resource_data()
             file_name = f"{self.output_dir}/{resource_data['id']}.json"
             self.save_to_file(resource_data, file_name)
 
     @staticmethod
-    def save_to_file(data, file_path):
+    def save_to_file(data: str, file_path: str) -> None:
         with open(file_path, "w") as file:
             json.dump(data, file, indent=2)
 

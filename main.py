@@ -3,27 +3,27 @@ from decorators import validate_input
 
 
 @validate_input
-def get_user_choice():
+def get_user_choice() -> int:
     return int(input("Enter your choice (1-4): "))
 
 
 @validate_input
-def get_resource_count():
+def get_resource_count() -> int:
     return int(input("Enter the number of resources to generate: "))
 
 
-def generate_data(generator_cls, output_dir):
+def generate_data(generator_cls, output_dir: str) -> None:
     count = get_resource_count()
     generator = generator_cls(count, output_dir)
     generator.generate_data()
 
 
-def exit_program():
+def exit_program() -> None:
     print("Exiting program.")
     exit()
 
 
-def main():
+def main() -> None:
     menu_options = {
         1: {"function": generate_data, "args": (PatientGenerator, "patients"), "message": "Generate Patient Data"},
         2: {"function": generate_data, "args": (PractitionerGenerator, "practitioners"),
