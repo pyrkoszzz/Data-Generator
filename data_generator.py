@@ -1,5 +1,11 @@
+import os
 import json
+import random
 from datetime import datetime, timedelta
+from faker import Faker
+import uuid
+
+fake = Faker()
 
 
 class BaseGenerator:
@@ -9,50 +15,94 @@ class BaseGenerator:
 
     def generate_data(self):
         for i in range(1, self.count + 1):
-            resource_data = self.generate_resource_data(i)
-            self.save_to_file(resource_data, f"{self.output_dir}/resource_{i}.json")
+            resource_data = self.generate_resource_data()
+            file_name = f"{self.output_dir}/{resource_data['id']}.json"
+            self.save_to_file(resource_data, file_name)
 
     @staticmethod
     def save_to_file(data, file_path):
         with open(file_path, "w") as file:
             json.dump(data, file, indent=2)
 
-    def generate_resource_data(self, resource_id):
+    def generate_resource_data(self):
         raise NotImplementedError("Subclasses must implement generate_resource_data")
 
 
 class PatientGenerator(BaseGenerator):
-    def generate_resource_data(self, resource_id):
+    def generate_resource_data(self):
         return {
             "resourceType": "Patient",
-            "id": f"patient_{resource_id}",
-            "name": {"given": f"Patient{resource_id}", "family": "Smith"},
-            "gender": "male" if resource_id % 2 == 0 else "female",
-            "birthDate": (datetime.now() - timedelta(days=365 * 30 * resource_id)).strftime("%Y-%m-%d"),
-            "address": {"city": "City" + str(resource_id), "state": "State" + str(resource_id)},
+            "id": f"patient_{str(uuid.uuid4())}",
+            "name": [
+                {
+                    "use": "official",
+                    "given": [fake.first_name(), fake.first_name()],
+                    "family": fake.last_name()
+                }
+            ],
+            "gender": fake.random_element(elements=('male', 'female', 'other')),
+            "birthDate": fake.date_of_birth(minimum_age=20, maximum_age=80).strftime("%Y-%m-%d"),
+            "address": [
+                {
+                    "use": "home",
+                    "line": [fake.street_address()],
+                    "postalCode": fake.zipcode()
+                }
+            ]
         }
 
 
 class PractitionerGenerator(BaseGenerator):
-    def generate_resource_data(self, resource_id):
+    def generate_resource_data(self):
+        practitioner_id = f"practitioner_{uuid.uuid4()}"
         return {
             "resourceType": "Practitioner",
-            "id": f"practitioner_{resource_id}",
-            "name": {"given": f"Dr{resource_id}", "family": "Careful"},
-            "address": {"city": "City" + str(resource_id), "state": "State" + str(resource_id)},
-            "qualification": {"code": f"Q{resource_id}", "description": "Qualification Description"},
+            "id": practitioner_id,
+            "name": [
+                {
+                    "family": fake.last_name(),
+                    "given": [fake.first_name(), fake.first_name()],
+                    "prefix": ["Prof", "Dr"],
+                }
+            ],
+            "address": [
+                {
+                    "use": "home",
+                    "line": [fake.street_address()],
+                    "city": fake.city(),
+                    "state": fake.state_abbr(),
+                    "postalCode": fake.zipcode(),
+                }
+            ],
+            "qualification": [
+                {
+                    "code": {
+                        "coding": [
+                            {
+                                "system": "http://terminology.hl7.org/CodeSystem/v2-0360/2.7",
+                                "code": "DM",
+                                "display": "Doctor of Medicine",
+                            }
+                        ],
+                        "text": "Doctor of Medicine",
+                    },
+                    "issuer": {
+                        "display": fake.company()
+                    },
+                }
+            ],
         }
 
 
 class AppointmentGenerator(BaseGenerator):
-    def generate_resource_data(self, resource_id):
+    def generate_resource_data(self):
         return {
             "resourceType": "Appointment",
-            "id": f"appointment_{resource_id}",
-            "status": "booked",
-            "class": "ambulatory" if resource_id % 2 == 0 else "acute",
-            "description": f"Appointment Description {resource_id}",
-            "start": (datetime.now() + timedelta(days=resource_id)).strftime("%Y-%m-%d %H:%M:%S"),
-            "end": (datetime.now() + timedelta(days=resource_id + 1)).strftime("%Y-%m-%d %H:%M:%S"),
-            "created": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "id": f"appointment_{str(uuid.uuid4())}",
+            "status": fake.random_element(elements=('booked', 'confirmed', 'done')),
+            "class": fake.random_element(elements=('ambulatory', 'acute')),
+            "description": fake.sentence(),
+            "start": fake.date_time_this_year().strftime("%Y-%m-%d %H:%M:%S"),
+            "end": (fake.date_time_this_year() + timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S"),
+            "created": fake.date_time_this_year().strftime("%Y-%m-%d %H:%M:%S"),
         }
