@@ -1,0 +1,10 @@
+{
+  "resourceType" : "Appointment",
+  "id" : "example",
+  "status" : "booked",
+  "class" : "ambulatory",
+  "description" : "Discussion on the results of your recent MRI",
+  "start" : "2013-12-10 09:00:00",
+  "end" : "2013-12-10 11:00:00",
+  "created" : "2013-10-10"
+}

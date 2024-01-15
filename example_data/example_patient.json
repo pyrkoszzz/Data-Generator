@@ -1,0 +1,16 @@
+{
+  "resourceType" : "Patient",
+  "id" : "patient_1",
+  "name" : [{
+    "use" : "official",
+    "family" : "Smith",
+    "given" : ["Eve", "Annabella"]
+  }],
+  "gender" : "female",
+  "birthDate" : "1973-05-31",
+  "address" : [{
+    "use" : "home",
+    "line" : ["2222 Home Street"],
+    "postalCode" : "WA316324"
+  }]
+}

@@ -1,0 +1,29 @@
+{
+  "resourceType" : "Practitioner",
+  "id" : "practitioner_1",
+  "name" : [{
+    "family" : "Careful",
+    "given" : ["Adam"],
+    "prefix" : ["Prof", "Dr"]
+  }],
+  "address" : [{
+    "use" : "home",
+    "line" : ["534 Erewhon St"],
+    "city" : "PleasantVille",
+    "state" : "Vic",
+    "postalCode" : "3999"
+  }],
+  "qualification" : [{
+    "code" : {
+      "coding" : [{
+        "system" : "http://terminology.hl7.org/CodeSystem/v2-0360/2.7",
+        "code" : "DM",
+        "display" : "Doctor of Medicine"
+      }],
+      "text" : "Doctor of Medicine"
+    },
+    "issuer" : {
+      "display" : "Example University"
+    }
+  }]
+}
