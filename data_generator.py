@@ -1,7 +1,7 @@
 import os
 import json
 import random
-from datetime import datetime, timedelta
+from datetime import timedelta
 from faker import Faker
 import uuid
 
@@ -10,7 +10,7 @@ fake = Faker()
 
 class BaseGenerator:
     def __init__(self, count, output_dir):
-        self.count = count
+        self.count = max(count, 10)
         self.output_dir = output_dir
 
     def generate_data(self):
@@ -103,6 +103,6 @@ class AppointmentGenerator(BaseGenerator):
             "class": fake.random_element(elements=('ambulatory', 'acute')),
             "description": fake.sentence(),
             "start": fake.date_time_this_year().strftime("%Y-%m-%d %H:%M:%S"),
-            "end": (fake.date_time_this_year() + timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S"),
+            "end": (fake.date_time_this_year() + timedelta(hours=random.randint(1, 3))).strftime("%Y-%m-%d %H:%M:%S"),
             "created": fake.date_time_this_year().strftime("%Y-%m-%d %H:%M:%S"),
         }
