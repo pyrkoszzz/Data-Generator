@@ -10,7 +10,7 @@ fake = Faker()
 
 class BaseGenerator:
     def __init__(self, count: int, output_dir: str):
-        self.count = max(count, 10)
+        self.count = min(count, max(count, 10))
         self.output_dir = output_dir
 
     def generate_data(self) -> None:
